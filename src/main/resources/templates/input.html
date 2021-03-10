@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Text Input Page</title>
+</head>
+<body>
+    <h1>Enter your text here</h1>
+    <form th:action="@{/input}">
+        <label>Text:</label>
+        <input type="text" placeholder="Enter a text here" method="post" th:name="text"/>
+        <input type="submit"/>
+
+<!--        <button name="submit" type="submit" th:name="text" value="0">Submit</button>-->
+    </form>
+
+
+</body>
+</html>

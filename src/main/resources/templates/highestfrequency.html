@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Text Input Page</title>
+</head>
+<body>
+    <h1>Getting the Highest Frequency</h1>
+    <form th:action="@{/highestfrequency}">
+        <label>Text:</label>
+        <input type="text" placeholder="Enter a text here" method="post" th:name="inputtedText"/>
+        <input type="submit"/>
+    </form><br>
+
+    <div>The Highest Frequency in the Inputted Text</div>
+    <div th:text="${print}">N/A</div>
+
+</body>
+</html>

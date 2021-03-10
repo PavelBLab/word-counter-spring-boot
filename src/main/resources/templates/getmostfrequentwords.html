@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Text Input Page</title>
+</head>
+    <h1>Getting the Most Frequent Words</h1>
+    <form th:action="@{/getmostfrequentwords}">
+        <label>Text:</label>
+        <input type="text" placeholder="Enter a text here" method="post" th:name="inputtedText"/>
+        <label>Number of Words:</label>
+        <input type="text" placeholder="Enter a number here" method="post" th:name="inputtedNumberOfWords"/>
+        <input type="submit"/>
+    </form><br>
+
+    <div>The Highest Frequency in the Inputted Text</div>
+    <div th:text="${print}">N/A</div>
+
+</body>
+</html>
