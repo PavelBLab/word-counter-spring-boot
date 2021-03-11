@@ -3,7 +3,10 @@ package pg.wordcounter.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pg.wordcounter.service.WordFrequency;
 import pg.wordcounter.service.WordService;
 
@@ -57,7 +60,7 @@ public class WordController {
 //    }
 
 
-    @RequestMapping(value = "/highestfrequency", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/highestfrequency", method = RequestMethod.GET)
     public String getHighestFrequency(@RequestParam(value = "inputtedText", required = false) String text,
                                       Model model) {
 
