@@ -1,5 +1,7 @@
 package pg.wordcounter.service;
 
+import java.util.Objects;
+
 public class WordFrequencyClass implements WordFrequency {
 
     private String word;
@@ -18,6 +20,18 @@ public class WordFrequencyClass implements WordFrequency {
     @Override
     public int getFrequency() {
         return this.frequency;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WordFrequencyClass that = (WordFrequencyClass) o;
+
+        return frequency == that.frequency && Objects.equals(word, that.word);
     }
 
     @Override

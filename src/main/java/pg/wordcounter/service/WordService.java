@@ -47,8 +47,10 @@ public class WordService implements WordFrequencyAnalyzer {
         setText(text);
 
         List<WordFrequency> wordList = new ArrayList<>();
-        for (String key : this.library.keySet()) {
-            wordList.add(new WordFrequencyClass(key, this.library.get(key)));
+        for (Map.Entry<String, Integer> entry : this.library.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+            wordList.add(new WordFrequencyClass(key, value));
         }
         return wordList;
     }
@@ -101,7 +103,9 @@ public class WordService implements WordFrequencyAnalyzer {
 
         this.library = sortedMap;
 
-        for (String key : library.keySet()) {
+        for (Map.Entry<String, Integer> entry : library.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
             // Create a new word in repository
             if (wordRepository.findByWord(key).size() == 0) {
                 Word word = new Word(key, library.get(key));
@@ -126,7 +130,6 @@ public class WordService implements WordFrequencyAnalyzer {
     @Override
     public int calculateHighestFrequency(String text) {
         setText(text);
-        Integer number;
         // System.out.println(this.library.entrySet().stream().findFirst().get().getKey());
 
         if (this.library.entrySet().stream().findFirst().isPresent()) {

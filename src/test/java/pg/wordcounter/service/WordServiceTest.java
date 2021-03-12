@@ -1,6 +1,5 @@
 package pg.wordcounter.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,6 +7,9 @@ import pg.wordcounter.dao.WordRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WordServiceTest {
 
@@ -20,7 +22,7 @@ public class WordServiceTest {
         WordService wordService = new WordService(wordRepository);
 
         wordService.setText(text);
-        Assertions.assertEquals(4, wordService.getLibrary().get("the"));
+        assertEquals(4, wordService.getLibrary().get("the"));
 
     }
 
@@ -30,7 +32,7 @@ public class WordServiceTest {
         String text = "The sun shines over the lake. Ducks swimming in the lake. The lake was beautiful.";
 
         WordService wordService = new WordService(wordRepository);
-        Assertions.assertEquals(4, wordService.calculateHighestFrequency(text));
+        assertEquals(4, wordService.calculateHighestFrequency(text));
 
     }
 
@@ -40,7 +42,7 @@ public class WordServiceTest {
         String text = "The sun shines over the lake. Ducks swimming in the lake. The lake was beautiful.";
 
         WordService wordService = new WordService(wordRepository);
-        Assertions.assertEquals(4, wordService.calculateFrequencyForWord(text, "the"));
+        assertEquals(4, wordService.calculateFrequencyForWord(text, "the"));
 
     }
 
@@ -54,6 +56,10 @@ public class WordServiceTest {
         words.add(new WordFrequencyClass("the", 4));
         words.add(new WordFrequencyClass("lake", 3));
 
-        Assertions.assertEquals(words.toString(), wordService.calculateMostFrequentNWords(text, 2).toString());
+        List<WordFrequency> result = wordService.calculateMostFrequentNWords(text, 2);
+
+        for (WordFrequency wordFrequency : words) {
+            assertTrue(result.contains(wordFrequency));
+        }
     }
 }
