@@ -6,6 +6,8 @@ import pg.wordcounter.dao.WordRepository;
 import pg.wordcounter.model.Word;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class WordService implements WordFrequencyAnalyzer {
@@ -16,6 +18,9 @@ public class WordService implements WordFrequencyAnalyzer {
     private Map<String, Integer> library;
     private List<String> listOfWords;
     private List<Integer> wordIndexes;
+
+    // Create a Logger
+    Logger logger = Logger.getLogger(WordService.class.getName());
 
     public WordService() {
         this.library = new HashMap<>();
@@ -39,10 +44,6 @@ public class WordService implements WordFrequencyAnalyzer {
         return library;
     }
 
-    public void setLibrary(Map<String, Integer> library) {
-        this.library = library;
-    }
-
     public List<WordFrequency> getAllWords() {
         setText(text);
 
@@ -53,6 +54,15 @@ public class WordService implements WordFrequencyAnalyzer {
             wordList.add(new WordFrequencyClass(key, value));
         }
         return wordList;
+    }
+
+    public String textCleaner(String text) {
+        String cleanedText = text;
+        cleanedText = cleanedText.replaceAll("[^a-zA-Z\\s]", " ")
+                .replaceAll("\\s+", " ")
+                .toLowerCase()
+                .trim();
+        return cleanedText;
     }
 
     public String getText() {
@@ -77,13 +87,14 @@ public class WordService implements WordFrequencyAnalyzer {
         this.wordIndexes.add(0, 0);
         this.wordIndexes.add(this.wordIndexes.size(), cleanedText.length());
 
+        /*
+         * Alternative solution ==> this.listOfWords.addAll(Arrays.asList(cleanedText.split(" ")));
+         * Alternative solution ==> this.library = this.listOfWords.stream().collect(Collectors.toMap(k -> k, v -> 1, Integer::sum));
+         */
+
         for (int i = 0; i < this.wordIndexes.size() - 1; i++) {
             this.listOfWords.add(cleanedText.substring(this.wordIndexes.get(i), this.wordIndexes.get(i + 1)).trim());
         }
-
-        // Alternative solution
-        // this.listOfWords.addAll(Arrays.asList(cleanedText.split(" ")));
-        // this.library = this.listOfWords.stream().collect(Collectors.toMap(k -> k, v -> 1, Integer::sum));
 
         for (String word : this.listOfWords) {
             if (this.library.get(word) == null) {
@@ -107,46 +118,39 @@ public class WordService implements WordFrequencyAnalyzer {
             String key = entry.getKey();
             Integer value = entry.getValue();
             // Create a new word in repository
-            if (wordRepository.findByWord(key).size() == 0) {
-                Word word = new Word(key, library.get(key));
+            if (wordRepository.findByWordName(key).isEmpty()) {
+                Word word = new Word(key, value);
                 wordRepository.save(word);
             } else {
                 // Update an existing word in repository
                 Integer frequency = library.get(key);
-                Word wordInRepo = wordRepository.findByWord(key).get(0);
+                Word wordInRepo = wordRepository.findByWordName(key).get(0);
                 wordInRepo.setFrequency(frequency);
                 wordRepository.save(wordInRepo);
             }
         }
     }
 
-    private String textCleaner(String text) {
-        String cleanedText = text;
-        cleanedText = cleanedText.replaceAll("[^a-zA-Z\\s]", " ").replaceAll("\\s+", " ").toLowerCase();
-        //System.out.println(cleanedText);
-        return cleanedText;
-    }
-
     @Override
     public int calculateHighestFrequency(String text) {
         setText(text);
-        // System.out.println(this.library.entrySet().stream().findFirst().get().getKey());
+        Integer highestFrequency = 0;
+        Optional<Map.Entry<String, Integer>> entry = this.library.entrySet().stream().findFirst();
 
-        if (this.library.entrySet().stream().findFirst().isPresent()) {
-            return this.library.entrySet().stream().findFirst().get().getValue();
-        } else {
-            return 0;
+        if (entry.isPresent()) {
+            highestFrequency = entry.get().getValue();
         }
+
+        return highestFrequency;
     }
 
     @Override
     public int calculateFrequencyForWord(String text, String word) {
         setText(text);
         try {
-            //System.out.println(word);
             return this.library.get(word);
         } catch (NullPointerException e) {
-            System.out.println(e + "\nThere is no such a word. Choose another word");
+            logger.log(Level.INFO, "The text does not contain the entered word. Choose another word.\n", e);
             return 0;
         }
     }
@@ -157,18 +161,20 @@ public class WordService implements WordFrequencyAnalyzer {
 
         List<WordFrequency> mostFrequentNWordsList = new ArrayList<>();
         int count = 0;
-        for (String key: this.library.keySet()) {
+        for (Map.Entry<String, Integer> entry : this.library.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
 
             if (n < 0) {
-                System.out.println("Enter a number greater then 0");
-                break;
+                logger.log(Level.INFO, "Enter a number greater then 0");
+                return mostFrequentNWordsList;
             }
 
             if (count == n) {
                 break;
             }
 
-            mostFrequentNWordsList.add(new WordFrequencyClass(key, this.library.get(key)));
+            mostFrequentNWordsList.add(new WordFrequencyClass(key, value));
             count++;
 
         }

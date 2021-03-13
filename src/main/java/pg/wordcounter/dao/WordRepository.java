@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface WordRepository extends CrudRepository<Word, Integer> {
 
-    List<Word> findByWord(String word);
+    List<Word> findByWordName(String word);
 
 }

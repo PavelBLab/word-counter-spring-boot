@@ -8,81 +8,90 @@ import pg.wordcounter.service.WordFrequency;
 import pg.wordcounter.service.WordService;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
 public class WordController {
 
     private final WordService wordService;
+    private static final String PRINT = "print";
+
+    // Create a Logger
+    Logger logger = Logger.getLogger(WordController.class.getName());
 
     @Autowired
     public WordController(WordService wordService) {
         this.wordService = wordService;
     }
 
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public @ResponseBody String getGritting() {
-        return "I am a Word Counter API";
+    @GetMapping(value = "/")
+    public @ResponseBody
+    String getGritting() {
+        return "Hello, I am a Word Counter API";
     }
 
-    @RequestMapping(value = "/highestfrequency", method = RequestMethod.GET)
-    public String getHighestFrequency(@RequestParam(value = "inputtedText", required = false) String text,
-                                      Model model) {
-
-        if (text != null) {
-            //System.out.println(text);
-            Integer output = wordService.calculateHighestFrequency(text);
-            model.addAttribute("print", output);
-        }
-        return "highestfrequency";
-    }
-
-    // Alternative
-    @RequestMapping(value = "/highestfrequencypost", method = RequestMethod.POST)
+    // Rest controller
+    @PostMapping(value = "/highest-frequency-rest")
     public @ResponseBody
     Integer getHighestFrequency(@RequestBody String text) {
         return wordService.calculateHighestFrequency(text);
     }
 
+    // Submission form
+    @GetMapping(value = "/highest-frequency")
+    public String getHighestFrequency(@RequestParam(value = "inputtedText", required = false) String text,
+                                      Model model) {
 
-    @RequestMapping(value = "/getwordfrequency", method = RequestMethod.GET)
+        if (text != null) {
+            Integer output = wordService.calculateHighestFrequency(text);
+            model.addAttribute(PRINT, output);
+        }
+        return "highest-frequency";
+    }
+
+
+    // Rest controller
+    @PostMapping(value = "/get-word-frequency-rest/{wordName}")
+    public @ResponseBody
+    Integer getFrequencyForWord(@RequestBody String text, @PathVariable String wordName) {
+        return wordService.calculateFrequencyForWord(text, wordName);
+    }
+
+    // Submission form
+    @GetMapping(value = "/get-word-frequency")
     public String getFrequencyForWord(@RequestParam(value = "inputtedText", required = false) String text,
                                       @RequestParam(value = "inputtedWord", required = false) String word,
                                       Model model) {
         if (text != null) {
-            System.out.println(text);
-            System.out.println(word);
+            logger.log(Level.INFO, text);
+            logger.log(Level.INFO, word);
             Integer output = wordService.calculateFrequencyForWord(text, word);
-            model.addAttribute("print", output);
+            model.addAttribute(PRINT, output);
         }
-        return "getwordfrequency";
+        return "get-word-frequency";
     }
 
-    //Alternative
-    @RequestMapping(value = "/getwordfrequencypost/{word}", method = RequestMethod.POST)
+
+    // Rest controller
+    @PostMapping(value = "/get-most-frequent-words-rest/{numberOfWords}")
     public @ResponseBody
-    Integer getFrequencyForWord(@RequestBody String text, @PathVariable String word) {
-        return wordService.calculateFrequencyForWord(text, word);
+    List<WordFrequency> getHighestFrequency(@RequestBody String text, @PathVariable Integer numberOfWords) {
+        return wordService.calculateMostFrequentNWords(text, numberOfWords);
     }
 
-
-    @RequestMapping(value = "/getmostfrequentwords", method = RequestMethod.GET)
+    // Submission form
+    @GetMapping(value = "/get-most-frequent-words")
     public String getMostFrequentWords(@RequestParam(value = "inputtedText", required = false) String text,
                                        @RequestParam(value = "inputtedNumberOfWords", required = false) Integer numberOfWords,
                                        Model model) {
         if (text != null) {
-            System.out.println(text);
-            System.out.println(numberOfWords);
-            List<WordFrequency> output = wordService.calculateMostFrequentNWords(text, numberOfWords);
-            model.addAttribute("print", output);
-        }
-        return "getmostfrequentwords";
-    }
+            logger.log(Level.INFO, text);
+            logger.log(Level.INFO, String.valueOf(numberOfWords));
 
-    // Alternative
-    @RequestMapping(value = "/getmostfrequentwordspost/{numberOfWords}", method = RequestMethod.POST)
-    public @ResponseBody
-    List<WordFrequency> HighestFrequency(@RequestBody String text, @PathVariable Integer numberOfWords) {
-        return wordService.calculateMostFrequentNWords(text, numberOfWords);
+            List<WordFrequency> output = wordService.calculateMostFrequentNWords(text, numberOfWords);
+            model.addAttribute(PRINT, output);
+        }
+        return "get-most-frequent-words";
     }
 }

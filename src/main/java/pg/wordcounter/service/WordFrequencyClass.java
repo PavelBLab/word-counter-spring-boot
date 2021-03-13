@@ -35,6 +35,11 @@ public class WordFrequencyClass implements WordFrequency {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(word, frequency);
+    }
+
+    @Override
     public String toString() {
         return "(" + word + "," + frequency + ")";
     }

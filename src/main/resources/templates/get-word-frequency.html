@@ -4,13 +4,15 @@
     <meta charset="UTF-8"/>
     <title>Text Input Page</title>
 </head>
-<body>
-    <h1>Getting the Highest Frequency</h1>
-    <form th:action="@{/highestfrequency}">
+    <h1>Getting a Frequency of a Specific Word</h1>
+    <form th:action="@{/get-word-frequency}">
         <label>Text:</label>
         <input placeholder="Enter a text here" th:name="inputtedText" type="text"/>
+        <label>Word:</label>
+        <input placeholder="Enter a word here" th:name="inputtedWord" type="text"/>
         <input type="submit"/>
-    </form><br>
+    </form>
+<br>
 
     <div>The Highest Frequency in the Inputted Text</div>
     <div th:text="${print}">N/A</div>

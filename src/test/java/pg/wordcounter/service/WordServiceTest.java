@@ -11,23 +11,32 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class WordServiceTest {
+ class WordServiceTest {
 
-    private WordRepository wordRepository = Mockito.mock(WordRepository.class);
+     private WordRepository wordRepository = Mockito.mock(WordRepository.class);
 
-    @Test
-    @DisplayName("Checking how a text is preprocessed and parsed to a hashMap")
-    void setText() {
-        String text = "The sun shines over the lake. Ducks swimming in the lake. The lake was beautiful.";
-        WordService wordService = new WordService(wordRepository);
 
-        wordService.setText(text);
-        assertEquals(4, wordService.getLibrary().get("the"));
+     @Test
+     @DisplayName("Checking how a text is preprocessed")
+     void textCleaner() {
+         String text = "The sun,,, !!shines over111 the,!) lake.";
+         WordService wordService = new WordService(wordRepository);
+         assertEquals("the sun shines over the lake", wordService.textCleaner(text));
 
-    }
+     }
 
-    @Test
-    @DisplayName("Checking the calculation of the highest frequency")
+     @Test
+     @DisplayName("Checking how a text is parsed to a hashMap")
+     void setText() {
+         String text = "The sun shines over the lake. Ducks swimming in the lake. The lake was beautiful.";
+         WordService wordService = new WordService(wordRepository);
+
+         wordService.setText(text);
+         assertEquals(4, wordService.getLibrary().get("the"));
+     }
+
+     @Test
+     @DisplayName("Checking the calculation of the highest frequency")
     void calculateHighestFrequency() {
         String text = "The sun shines over the lake. Ducks swimming in the lake. The lake was beautiful.";
 
@@ -43,7 +52,6 @@ public class WordServiceTest {
 
         WordService wordService = new WordService(wordRepository);
         assertEquals(4, wordService.calculateFrequencyForWord(text, "the"));
-
     }
 
     @Test

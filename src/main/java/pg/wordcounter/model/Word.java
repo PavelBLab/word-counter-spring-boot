@@ -10,16 +10,16 @@ public class Word {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "WORD_ID")
     private Integer id;
-    @Column(name = "WORD")
-    private String word;
+    @Column(name = "WORD_NAME")
+    private String wordName;
     @Column(name = "FREQUENCY")
     private Integer frequency;
 
     public Word() {
     }
 
-    public Word(String word, Integer frequency) {
-        this.word = word;
+    public Word(String wordName, Integer frequency) {
+        this.wordName = wordName;
         this.frequency = frequency;
     }
 
@@ -31,12 +31,12 @@ public class Word {
         this.id = id;
     }
 
-    public String getWord() {
-        return word;
+    public String getWordName() {
+        return wordName;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setWordName(String wordName) {
+        this.wordName = wordName;
     }
 
     public Integer getFrequency() {
@@ -51,7 +51,7 @@ public class Word {
     public String toString() {
         return "Word{" +
                 "id=" + id +
-                ", word='" + word + '\'' +
+                ", word='" + wordName + '\'' +
                 ", frequency=" + frequency +
                 '}';
     }
