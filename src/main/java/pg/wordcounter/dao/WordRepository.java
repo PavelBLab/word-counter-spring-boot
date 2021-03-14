@@ -11,4 +11,6 @@ public interface WordRepository extends CrudRepository<Word, Integer> {
 
     List<Word> findByWordName(String word);
 
+    Word findFirstByOrderByFrequencyDesc();
+
 }

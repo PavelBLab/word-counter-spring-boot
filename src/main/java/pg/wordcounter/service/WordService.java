@@ -162,10 +162,7 @@ public class WordService implements WordFrequencyAnalyzer {
             highestFrequency = entry.get().getValue();
         }
 
-        List<Word> words = new ArrayList<>();
-        wordRepository.findAll().forEach(words::add);
-        logger.log(Level.INFO, String.valueOf(words));
-        logger.log(Level.INFO, String.valueOf(words.get(0)));
+        logger.log(Level.INFO, String.valueOf(wordRepository.findFirstByOrderByFrequencyDesc()));
 
         return highestFrequency;
     }

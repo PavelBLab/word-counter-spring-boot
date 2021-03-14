@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pg.wordcounter.dto.HighestFrequencyResult;
+import pg.wordcounter.dto.MostFrequentWordsResult;
+import pg.wordcounter.dto.WordFrequencyResult;
 import pg.wordcounter.service.WordFrequency;
 import pg.wordcounter.service.WordService;
 
@@ -18,7 +21,7 @@ public class WordController {
     private static final String PRINT = "print";
 
     // Create a Logger
-    Logger logger = Logger.getLogger(WordController.class.getName());
+    static final Logger logger = Logger.getLogger(WordController.class.getName());
 
     @Autowired
     public WordController(WordService wordService) {
@@ -34,8 +37,8 @@ public class WordController {
     // Rest controller
     @PostMapping(value = "/highest-frequency-rest")
     public @ResponseBody
-    Integer getHighestFrequency(@RequestBody String text) {
-        return wordService.calculateHighestFrequency(text);
+    HighestFrequencyResult getHighestFrequency(@RequestBody String text) {
+        return new HighestFrequencyResult(wordService.calculateHighestFrequency(text));
     }
 
     // Submission form
@@ -50,12 +53,11 @@ public class WordController {
         return "highest-frequency";
     }
 
-
     // Rest controller
     @PostMapping(value = "/get-word-frequency-rest/{wordName}")
     public @ResponseBody
-    Integer getFrequencyForWord(@RequestBody String text, @PathVariable String wordName) {
-        return wordService.calculateFrequencyForWord(text, wordName);
+    WordFrequencyResult getFrequencyForWord(@RequestBody String text, @PathVariable String wordName) {
+        return new WordFrequencyResult(wordService.calculateFrequencyForWord(text, wordName));
     }
 
     // Submission form
@@ -72,12 +74,11 @@ public class WordController {
         return "get-word-frequency";
     }
 
-
     // Rest controller
     @PostMapping(value = "/get-most-frequent-words-rest/{numberOfWords}")
     public @ResponseBody
-    List<WordFrequency> getHighestFrequency(@RequestBody String text, @PathVariable Integer numberOfWords) {
-        return wordService.calculateMostFrequentNWords(text, numberOfWords);
+    MostFrequentWordsResult getMostFrequentWords(@RequestBody String text, @PathVariable Integer numberOfWords) {
+        return new MostFrequentWordsResult(wordService.calculateMostFrequentNWords(text, numberOfWords));
     }
 
     // Submission form
