@@ -44,6 +44,10 @@ public class WordService implements WordFrequencyAnalyzer {
         return library;
     }
 
+    /**
+     * @return an ArrayList of all WordFrequency instances from the database
+     * WordFrequency instance contains String word and Integer frequency
+     */
     public List<WordFrequency> getAllWords() {
         setText(text);
 
@@ -56,6 +60,9 @@ public class WordService implements WordFrequencyAnalyzer {
         return wordList;
     }
 
+    /**
+     * @return a cleaned String without [.,!....]
+     */
     public String textCleaner(String text) {
         String cleanedText = text;
         cleanedText = cleanedText.replaceAll("[^a-zA-Z\\s]", " ")
@@ -69,6 +76,10 @@ public class WordService implements WordFrequencyAnalyzer {
         return text;
     }
 
+    /**
+     * populating a HashMap with key - String word, value - Integer frequency
+     * adding words and frequencies to the database
+     */
     public void setText(String text) {
         this.text = text;
         setListOfWords();
@@ -131,6 +142,16 @@ public class WordService implements WordFrequencyAnalyzer {
         }
     }
 
+    /**
+     * @param text is an uncleaned text
+     *             <p>
+     *             Alternative solution
+     *             List<Word> words = new ArrayList<>();
+     *             wordRepository.findAll().forEach(words::add);
+     *             logger.log(Level.INFO, String.valueOf(words));
+     *             return words.get(0).getFrequency();
+     * @return frequency (int) of the most repeated word
+     */
     @Override
     public int calculateHighestFrequency(String text) {
         setText(text);
@@ -141,9 +162,20 @@ public class WordService implements WordFrequencyAnalyzer {
             highestFrequency = entry.get().getValue();
         }
 
+        List<Word> words = new ArrayList<>();
+        wordRepository.findAll().forEach(words::add);
+        logger.log(Level.INFO, String.valueOf(words));
+        logger.log(Level.INFO, String.valueOf(words.get(0)));
+
         return highestFrequency;
     }
 
+
+    /**
+     * @param text is an uncleaned text
+     * @param word which occurrence should be found in the text
+     * @return frequency (int) of the requested word
+     */
     @Override
     public int calculateFrequencyForWord(String text, String word) {
         setText(text);
@@ -155,6 +187,12 @@ public class WordService implements WordFrequencyAnalyzer {
         }
     }
 
+
+    /**
+     * @param text is an uncleaned text
+     * @param n    a number of returned (word, frequency)
+     * @return a list of (word, frequency) pairs
+     */
     @Override
     public List<WordFrequency> calculateMostFrequentNWords(String text, int n) {
         setText(text);
